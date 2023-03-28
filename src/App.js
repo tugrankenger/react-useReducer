@@ -1,23 +1,26 @@
-import logo from './logo.svg';
+import { useReducer } from 'react';
+import reducer from './reducer';
 import './App.css';
 
+const initialState = {
+  data: '',
+  loading: true,
+  error: '',
+};
+
 function App() {
+  const [state, action] = useReducer(reducer, initialState);
+  const fetchDog = () => {
+    fetch('https://dog.ceo/api/breeds/image/random')
+      .then((res) => res.json())
+      .then((res) => console.log('get dog obj: ', res))
+      .catch((e) => console.log('Error: ', e));
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <button className='fetchBtn' onClick={fetchDog}>
+        Get Random Dog
+      </button>
     </div>
   );
 }
