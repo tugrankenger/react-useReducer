@@ -4,23 +4,37 @@ import './App.css';
 
 const initialState = {
   data: '',
-  loading: true,
+  loading: false,
   error: '',
 };
 
 function App() {
-  const [state, action] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { data, loading, error } = state;
   const fetchDog = () => {
+    dispatch({ type: 'FETCH_START' });
     fetch('https://dog.ceo/api/breeds/image/random')
       .then((res) => res.json())
-      .then((res) => console.log('get dog obj: ', res))
-      .catch((e) => console.log('Error: ', e));
+      .then((res) => {
+        dispatch({ type: 'FETCH_SUCCESS', payload: res.message });
+      })
+      .catch((e) => {
+        dispatch({ type: 'FETCH_ERROR', payload: e });
+      });
   };
   return (
     <div className='App'>
-      <button className='fetchBtn' onClick={fetchDog}>
-        Get Random Dog
-      </button>
+      <div className='container'>
+        <button className='fetchBtn' onClick={fetchDog} disabled={loading}>
+          Get Random Dog
+        </button>
+        {data && (
+          <div>
+            <img src={data} alt='' />
+          </div>
+        )}
+        {error && ( <p>{error}</p> )}
+      </div>
     </div>
   );
 }
